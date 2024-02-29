@@ -1,0 +1,62 @@
+import pandas as pandas
+import tweepy
+import json
+from datetime import datetime
+import s3fs
+
+#we need to pass api key and access token to integrate credentials of twitter api in code
+access_key= "MMMMMMMMMMMMMMMMMMMM"
+access_secretkey= "MMMMMMMMMMMMMMMMMMM"
+consumer_key= "MMMMMMMMMMMMMMMM"
+consumer_secret="MMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+
+
+#tweepy package contain some function (OAUTHHANDLER) to authethication between your current code and twitter API
+#OAUTHHANDLER FUNCTION IS USED TO ESTABLISH CONNECTION BETWEEN code and twitter API
+
+auth= tweepy.OAuthHandler(access_key, access_secretkey)
+auth.set_access_token(consumer_key, consumer_secret)
+
+
+#CREATION OF API OBJECT/ object is necessary to access functionalities of TWITTER API
+api=tweepy.API(auth)
+
+#IF WE WANT TO SCRAPE INFORMATION ABOUT SOME SPECIFIC USER, WE CAN USE FUNCTION "USER_TIMELINE"
+tweets=api.user_timeline(screen_name='@elonmusk',
+                         #800 is the maximum allowed content / no of tweets we want to scrape
+                         count=200,
+                         include_rts = False,
+                         #necesary to keep_full text
+                         #if we dont set tweet_node to extended, only 140 words of every tweet will be scrape
+                        tweet_mode = 'extended'
+                         )
+
+tweet_list=[]
+for tweet in tweets:
+    text =  tweet._json["full_text"]
+
+    refined_tweet = {"user": tweet.user.scree_name, 
+                     "text" : text,
+                     'favorite_count': tweet.favorite_count,
+                     'retweet_count' : tweet.retweet_count,
+                     'created_at': tweet.created_at}
+      
+    tweet_list.append(refined_tweet)
+print(tweet_list)
+                     
+                     
+                     
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
